@@ -1,0 +1,11 @@
+{
+  "name": "Bazel Dev",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {},
+  "postCreateCommand": "bazel --version",
+  "features": {},
+  "forwardPorts": [],
+  "remoteUser": "vscode"
+}
