@@ -1,5 +1,9 @@
 FROM ubuntu:22.04
 
+# Create vscode user before installing stuff
+RUN groupadd --gid 1000 vscode && \
+    useradd -s /bin/bash --uid 1000 --gid vscode -m vscode
+
 # Install Bazel dependencies
 RUN apt-get update && apt-get install -y \
     curl \
@@ -12,18 +16,16 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     bash \
     ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    apt-transport-https
 
-# Install Bazel
-RUN apt-get update && \
-    apt-get install -y apt-transport-https && \
-    curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel.gpg && \
+# Add Bazel apt repo and install Bazel
+RUN curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel.gpg && \
     mv bazel.gpg /etc/apt/trusted.gpg.d/ && \
     echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list && \
     apt-get update && \
-    apt-get install -y bazel && \
-    apt-get clean
+    apt-get install -y bazel
 
-# Set working directory
+# Set default user
+USER vscode
+
 WORKDIR /workspaces/practice_bazel
-
